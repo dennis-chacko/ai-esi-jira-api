@@ -1,0 +1,29 @@
+{
+    "LAMBDA_NAME": "esi-jsm-ticket-producerr",
+    "LAMBDA_VERSION": "1.0.0",
+    "LAMBDA_DESCRIPTION": "ESI Producer for publishing JSM Tickets",
+    "LAMBDA_FOLDER": "output-folder",
+
+    "PRODUCER_INTERFACE_KEY_VALUE": "jsm_ticket_producer",
+    
+    "SOURCE_SYSTEM_SHORT_NAME": "jsm",
+
+    "$$file_TEMPLATE_CustomFilter.ts": "ItsmTicketFilter.ts",
+    "CustomFilter": "ItsmTicketFilter",
+
+    "$$file_TEMPLATE_SourceModel.ts": "JsmTicket.ts",
+    "SourceModel": "JsmTicket",
+
+    "$$file_TEMPLATE_EsiModel.ts": "ItsmTIcket.ts",
+    "EsiModel": "ItsmTIcket",
+
+    "$$file_TEMPLATE_SourceModelToEsiMapper.ts": "JsmTicketToItsmTicketMapper.ts",
+    "SourceModelToEsiMapper": "JsmTicketToItsmTicketMapper",
+
+    "$$file_TEMPLATE_EventToSourceModelTranMapper.ts": "EventToJsmTicketMapper.ts",
+    "EventToSourceModelTranMapper": "EventToJsmTicketTranMapper",
+
+    "$$file_TEMPLATE_CustomFilter.test.ts": "ItsmTicketFilter.test.ts",
+    "$$file_TEMPLATE_SourceModelToEsiMapper.test.ts": "JsmTicketToItsmTicketMapper.test.ts",
+    "$$file_TEMPLATE_EventToSourceModelTranMapper.test.ts": "EventToJsmTicketTranMapper.test.ts"
+}
