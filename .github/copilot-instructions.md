@@ -14,6 +14,11 @@ This is an AWS Lambda Producer function that accepts a payload in the Lambda eve
 - fast-xml-parser
 - lodash
 
+## Test dependencies
+- jest
+- @types/jest
+- ts-jest
+
 ## Files and Directories
 ├── src/
 │   ├── mappers/       // Mapper classes
