@@ -38,6 +38,7 @@
     "dependencies": {
         "@aws-sdk/client-dynamodb": "^3.714.0",
         "@types/xml-js": "^1.0.0",
+        "esi-integrations-library": "^1.0.17-5.0",
         "fast-xml-parser": "^4.5.0",
         "lodash": "^4.17.21"
     }
