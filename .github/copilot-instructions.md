@@ -84,3 +84,6 @@ See [Task 2: Configuration Management](tasks/task2-config-management.md) for det
 
 ### Task 3: Mapping Rules Implementation
 See [Task 3: Mapping Rules Implementation](tasks/task3-mapping_rules.md) for detailed instructions on implementing comprehensive mapping logic between JSM tickets and ITSM tickets, including event transformation and validation rules.
+
+### Final Task: Documentation Enhancement
+See [Final Task: Documentation Enhancement](tasks/finalTask-documentation.md) for detailed instructions on creating comprehensive documentation for local development, testing, and API Gateway usage with complete cURL and Postman examples. **This task should be completed last, after all other implementation tasks are finished.**

@@ -1,0 +1,252 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  ESI JSM Ticket Producer Lambda - Local Development
+  
+  AWS Lambda function for local development and testing of JSM ticket processing
+
+# Global configuration for all resources
+Globals:
+  Function:
+    Timeout: 60
+    MemorySize: 512
+    Runtime: nodejs18.x
+    Architectures:
+      - x86_64
+    Environment:
+      Variables:
+        NODE_ENV: dev
+        LOG_LEVEL: DEBUG
+        ESI_ENVIRONMENT: dev
+
+# Parameters for local development configuration
+Parameters:
+  ProducerInterfaceKey:
+    Type: String
+    Default: jsm_ticket_producer
+    Description: Producer interface key for SAMS integration
+    
+  EsiOAuthSecretName:
+    Type: String
+    Default: esi/interface/jsm/oauth
+    Description: AWS Secrets Manager secret name for ESI OAuth credentials
+    
+  SamsHostParam:
+    Type: String
+    Default: /esi/interface/common/sams_host
+    Description: Parameter Store key for SAMS host URL
+
+Resources:
+  # Main Lambda Function - Local Development
+  JsmTicketProducerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub "${AWS::StackName}-jsm-ticket-producer-local"
+      Description: "ESI Producer for processing and publishing JSM Tickets to SAMS (Local Development)"
+      CodeUri: dist-local/
+      Handler: index.handler
+      Environment:
+        Variables:
+          PRODUCER_INTERFACE_KEY: !Ref ProducerInterfaceKey
+          ESI_OAUTH_SECRET_NAME: !Ref EsiOAuthSecretName
+          SAMS_HOST_PARAM: !Ref SamsHostParam
+      Events:
+        # Main processing endpoint
+        ProcessTicketEvent:
+          Type: Api
+          Properties:
+            Path: /process-ticket
+            Method: post
+            RestApiId: !Ref JsmTicketApi
+            Auth:
+              ApiKeyRequired: false
+              AuthorizationScopes: []
+              Authorizer: NONE
+        # Health check endpoint (POST)
+        HealthCheckEvent:
+          Type: Api
+          Properties:
+            Path: /healthcheck
+            Method: post
+            RestApiId: !Ref JsmTicketApi
+            Auth:
+              ApiKeyRequired: false
+              AuthorizationScopes: []
+              Authorizer: NONE
+        # Health check endpoint (GET)
+        HealthGetEvent:
+          Type: Api
+          Properties:
+            Path: /health
+            Method: get
+            RestApiId: !Ref JsmTicketApi
+            Auth:
+              ApiKeyRequired: false
+              AuthorizationScopes: []
+              Authorizer: NONE
+      Policies:
+        # IAM policies for Lambda execution (minimal for local development)
+        - AWSLambdaBasicExecutionRole
+        - Version: '2012-10-17'
+          Statement:
+            # Secrets Manager access for OAuth credentials
+            - Effect: Allow
+              Action:
+                - secretsmanager:GetSecretValue
+              Resource: !Sub "arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:${EsiOAuthSecretName}*"
+            # Parameter Store access for configuration
+            - Effect: Allow
+              Action:
+                - ssm:GetParameter
+                - ssm:GetParameters
+              Resource: 
+                - !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter${SamsHostParam}"
+                - !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/esi/interface/*"
+            # DynamoDB access (if needed for tracking/deduplication)
+            - Effect: Allow
+              Action:
+                - dynamodb:GetItem
+                - dynamodb:PutItem
+                - dynamodb:UpdateItem
+                - dynamodb:DeleteItem
+                - dynamodb:Query
+                - dynamodb:Scan
+              Resource: !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/esi-*"
+      Tags:
+        Application: ESI
+        Component: JSM-Ticket-Producer
+        Environment: local-dev
+
+  # API Gateway for HTTP access - Local Development
+  JsmTicketApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: !Sub "${AWS::StackName}-jsm-ticket-api-local"
+      StageName: dev
+      Description: "API Gateway for JSM Ticket Producer Lambda (Local Development)"
+      Auth:
+        DefaultAuthorizer: NONE
+        AddDefaultAuthorizerToCorsPreflight: false
+      Cors:
+        AllowMethods: "'GET, POST, OPTIONS'"
+        AllowHeaders: "'Content-Type, X-Amz-Date, Authorization, X-Api-Key, X-Amz-Security-Token, Native-Business-Id, Document-Key'"
+        AllowOrigin: "'*'"
+      DefinitionBody:
+        swagger: "2.0"
+        info:
+          title: JSM Ticket Producer API (Local Development)
+          version: "1.0"
+        paths:
+          /process-ticket:
+            post:
+              summary: Process JSM Ticket
+              description: Accepts JSM ticket data and publishes to SAMS
+              consumes:
+                - application/json
+              produces:
+                - application/json
+              parameters:
+                - name: Native-Business-Id
+                  in: header
+                  type: string
+                  description: Native business identifier
+                - name: Document-Key
+                  in: header
+                  type: string
+                  description: Document key for tracking
+                - name: body
+                  in: body
+                  required: true
+                  schema:
+                    type: object
+              responses:
+                200:
+                  description: Successfully processed ticket
+                400:
+                  description: Validation error
+                500:
+                  description: Internal server error
+              x-amazon-apigateway-integration:
+                type: aws_proxy
+                httpMethod: POST
+                uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${JsmTicketProducerFunction.Arn}/invocations"
+          /healthcheck:
+            post:
+              summary: Health Check (POST)
+              description: Returns the health status of the service
+              produces:
+                - application/json
+              responses:
+                200:
+                  description: Service is healthy
+              x-amazon-apigateway-integration:
+                type: aws_proxy
+                httpMethod: POST
+                uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${JsmTicketProducerFunction.Arn}/invocations"
+          /health:
+            get:
+              summary: Health Check (GET)
+              description: Returns the health status of the service
+              produces:
+                - application/json
+              responses:
+                200:
+                  description: Service is healthy
+              x-amazon-apigateway-integration:
+                type: aws_proxy
+                httpMethod: POST
+                uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${JsmTicketProducerFunction.Arn}/invocations"
+
+  # CloudWatch Log Group for Lambda - Local Development
+  JsmTicketProducerLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/aws/lambda/${JsmTicketProducerFunction}"
+      RetentionInDays: 7
+
+  # Lambda permissions for API Gateway
+  ApiGatewayProcessTicketPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref JsmTicketProducerFunction
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub "${JsmTicketApi}/*/POST/process-ticket"
+
+  ApiGatewayHealthCheckPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref JsmTicketProducerFunction
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub "${JsmTicketApi}/*/POST/healthcheck"
+
+  ApiGatewayHealthGetPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref JsmTicketProducerFunction
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub "${JsmTicketApi}/*/GET/health"
+
+# Outputs for local development reference
+Outputs:
+  JsmTicketProducerFunction:
+    Description: "JSM Ticket Producer Lambda Function ARN (Local Development)"
+    Value: !GetAtt JsmTicketProducerFunction.Arn
+
+  JsmTicketProducerFunctionName:
+    Description: "JSM Ticket Producer Lambda Function Name (Local Development)"
+    Value: !Ref JsmTicketProducerFunction
+
+  LocalApiUrl:
+    Description: "Local API Gateway endpoint URL for JSM Ticket Producer"
+    Value: "http://127.0.0.1:3000"
+
+  ProcessTicketEndpoint:
+    Description: "Local endpoint for processing tickets"
+    Value: "http://127.0.0.1:3000/process-ticket"
+
+  HealthCheckEndpoint:
+    Description: "Local endpoint for health checks"
+    Value: "http://127.0.0.1:3000/healthcheck"

@@ -6,10 +6,14 @@
     "scripts": {
         "test": "jest --coverage",
         "build": "webpack --config webpack.config.js --output-path dist",
+        "build:local": "webpack --config webpack.local.config.js",
+        "build:sam": "npm run build:local && sam build",
         "clean": "tsc --build --clean tsconfig-build.json",
+        "clean:local": "rm -rf dist-local .aws-sam",
         "runtest": "tsc && cls && node dist/__tests__/index_test.js",
-        "sam:local": "sam local invoke TransactionTransformerFunction -e private_tests/events/event.json",
-        "sam:api": "sam local start-api"
+        "sam:local": "npm run build:sam && sam local invoke JsmTicketProducerFunction",
+        "sam:api": "npm run build:sam && sam local start-api",
+        "sam:invoke": "npm run build:sam && sam local invoke JsmTicketProducerFunction"
     },
     "devDependencies": {
         "@babel/plugin-transform-typescript": "^7.25.0",
