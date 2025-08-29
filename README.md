@@ -2,6 +2,38 @@
 
 AWS Lambda function for processing JSM tickets and publishing to SAMS for downstream consumption.
 
+## Table of Contents
+
+- [Overview](#overview)
+- [Project Structure](#project-structure)
+- [Development Workflow](#development-workflow)
+- [Prerequisites](#prerequisites)
+  - [Required Software](#required-software)
+  - [AWS Setup](#aws-setup)
+- [Installation](#installation)
+- [Environment Variables](#environment-variables)
+- [Building and Running Locally](#building-and-running-locally)
+  - [Quick Start](#quick-start)
+  - [Available Commands](#available-commands)
+- [API Endpoints](#api-endpoints)
+  - [1. Process Ticket](#1-process-ticket)
+  - [2. Health Check (POST)](#2-health-check-post)
+  - [3. Health Check (GET)](#3-health-check-get)
+- [Testing with cURL](#testing-with-curl)
+  - [1. Health Check (POST)](#1-health-check-post-1)
+  - [2. Health Check (GET)](#2-health-check-get-1)
+  - [3. Process JSM Ticket](#3-process-jsm-ticket)
+  - [4. Alternative JSON Payload Format](#4-alternative-json-payload-format)
+  - [Automated Testing](#automated-testing)
+- [Testing with Postman](#testing-with-postman)
+  - [1. Health Check (POST)](#1-health-check-post-2)
+  - [2. Health Check (GET)](#2-health-check-get-2)
+  - [3. Process JSM Ticket (XML Payload)](#3-process-jsm-ticket-xml-payload)
+  - [4. Process JSM Ticket (JSON Object Payload)](#4-process-jsm-ticket-json-object-payload)
+  - [5. Error Testing Examples](#5-error-testing-examples)
+  - [Import Collection](#import-collection)
+- [Troubleshooting](#troubleshooting)
+
 ## Overview
 
 This Lambda function:
@@ -9,6 +41,40 @@ This Lambda function:
 - Validates and transforms the ticket data
 - Publishes the transformed data to SAMS
 - Provides health check endpoints for monitoring
+
+## Project Structure
+
+```
+├── src/
+│   ├── mappers/              # Data transformation logic
+│   ├── models/               # Data models and interfaces
+│   ├── sams_common/          # SAMS integration utilities
+│   ├── config.ts             # Configuration management
+│   ├── index.ts              # Lambda entry point
+│   └── healthchecker.ts      # Health check implementation
+├── template.yaml             # AWS SAM template (local development)
+├── webpack.local.config.js   # Webpack config for local development
+└── test-local-api.sh         # Automated test script
+```
+
+## Development Workflow
+
+1. **Start Development**:
+   ```bash
+   npm run sam:api
+   ```
+
+2. **Make Code Changes**: 
+   - Edit files in `src/`
+   - Changes are reflected automatically (hot reload)
+
+3. **Test Changes**:
+   - Use cURL, Postman, or the test script
+   - Check console output for logs
+
+4. **Rebuild if Needed**:
+   - Stop the API (Ctrl+C)
+   - Run `npm run sam:api` again
 
 ## Prerequisites
 
@@ -52,6 +118,17 @@ This Lambda function:
 3. **Environment Setup**:
    - All environment variables are configured in `template.yaml`
    - Update any configuration in `src/config.ts` if needed
+
+## Environment Variables
+
+| Name | Description | Default Value |
+|------|-------------|---------------|
+| `NODE_ENV` | Application environment | `dev` |
+| `LOG_LEVEL` | Logging level | `DEBUG` |
+| `ESI_ENVIRONMENT` | ESI environment identifier | `dev` |
+| `PRODUCER_INTERFACE_KEY` | SAMS producer interface key | `jsm_ticket_producer` |
+| `ESI_OAUTH_SECRET_NAME` | AWS Secrets Manager secret name | `esi/interface/jsm/oauth` |
+| `SAMS_HOST_PARAM` | Parameter Store key for SAMS host | `/esi/interface/common/sams_host` |
 
 ## Building and Running Locally
 
@@ -340,40 +417,6 @@ You can create a Postman collection with the following structure for easy testin
    - `businessId`: `JSM-12345`
    - `documentKey`: `ticket-001`
 
-## Project Structure
-
-```
-├── src/
-│   ├── mappers/              # Data transformation logic
-│   ├── models/               # Data models and interfaces
-│   ├── sams_common/          # SAMS integration utilities
-│   ├── config.ts             # Configuration management
-│   ├── index.ts              # Lambda entry point
-│   └── healthchecker.ts      # Health check implementation
-├── template.yaml             # AWS SAM template (local development)
-├── webpack.local.config.js   # Webpack config for local development
-└── test-local-api.sh         # Automated test script
-```
-
-## Development Workflow
-
-1. **Start Development**:
-   ```bash
-   npm run sam:api
-   ```
-
-2. **Make Code Changes**: 
-   - Edit files in `src/`
-   - Changes are reflected automatically (hot reload)
-
-3. **Test Changes**:
-   - Use cURL, Postman, or the test script
-   - Check console output for logs
-
-4. **Rebuild if Needed**:
-   - Stop the API (Ctrl+C)
-   - Run `npm run sam:api` again
-
 ## Troubleshooting
 
 ### Common Issues
@@ -398,14 +441,3 @@ You can create a Postman collection with the following structure for easy testin
 - **Lambda logs**: Check console output when API is running
 - **Build logs**: Available during `npm run sam:api`
 - **AWS logs**: CloudWatch logs (when deployed to AWS)
-
-## Environment Variables
-
-| Name | Description | Default Value |
-|------|-------------|---------------|
-| `NODE_ENV` | Application environment | `dev` |
-| `LOG_LEVEL` | Logging level | `DEBUG` |
-| `ESI_ENVIRONMENT` | ESI environment identifier | `dev` |
-| `PRODUCER_INTERFACE_KEY` | SAMS producer interface key | `jsm_ticket_producer` |
-| `ESI_OAUTH_SECRET_NAME` | AWS Secrets Manager secret name | `esi/interface/jsm/oauth` |
-| `SAMS_HOST_PARAM` | Parameter Store key for SAMS host | `/esi/interface/common/sams_host` |
