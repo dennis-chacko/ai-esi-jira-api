@@ -22,3 +22,24 @@ List all configuration parameters that need centralized management:
 - [ ] `SAMS_HOST_PARAM` - SAMS API host URL for publishing documents
 - [ ] `PRODUCER_INTERFACE_KEY` - Producer interface identifier for SAMS integration
 - [ ] _Add more as needed..._
+
+## Model Schema Mapping
+
+### Model-to-Schema Mapping
+Define which model class should implement which schema:
+
+- [ ] **JsmTicket.ts**
+  - Schema File: `src/schema/sourceSchema.json`
+  - Interface: `IDocument`
+  - Description: Source model representing JSM ticket data
+
+- [ ] **ItsmTIcket.ts**
+  - Schema File: `src/schema/itsmTIcket.ts.json`
+  - Interface: `ISamsDocument`
+  - Description: Target model for ESI/SAMS integration
+
+- [ ] **_Add more models as needed..._**
+  - Schema File: `_path/to/schema.json_`
+  - Interface: `_Interface_`
+  - Description: `_Description_`
+

@@ -81,3 +81,6 @@ See [Task 1: Housekeeping Tasks](tasks/task1-housekeeping.md) for detailed instr
 
 ### Task 2: Configuration Management
 See [Task 2: Configuration Management](tasks/task2-config-management.md) for detailed instructions on refactoring config.ts with proper OOP encapsulation.
+
+### Task 3: Mapping Rules Implementation
+See [Task 3: Mapping Rules Implementation](tasks/task3-mapping_rules.md) for detailed instructions on implementing comprehensive mapping logic between JSM tickets and ITSM tickets, including event transformation and validation rules.

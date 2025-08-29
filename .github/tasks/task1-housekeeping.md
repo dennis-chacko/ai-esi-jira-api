@@ -6,7 +6,7 @@ Organize project files into proper directory structure for better maintainabilit
 ## Tasks
 - Move config.ts to the config/ directory
 - Move health check related files to the services/ directory
-- Move ItsmTicketFilter.ts to the services/filters directory
+- Move filter classes - classes implementing the `IDocFilter` interface, to the services/filters directory
 
 ## Implementation Notes
 - Ensure all import statements are updated when moving files

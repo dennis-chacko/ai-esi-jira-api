@@ -1,0 +1,109 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ITSM Ticket",
+  "description": "A vendor-agnostic ITSM ticket structure including optional comments, tags, custom fields, and system identifiers",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique identifier for this ticket in the canonical model"
+    },
+    "identifiers": {
+      "type": "array",
+      "description": "Identifiers of this ticket in external ITSM systems",
+      "items": {
+        "type": "object",
+        "required": ["system", "id"],
+        "properties": {
+          "system": { "type": "string", "description": "Name of the external ITSM system" },
+          "id": { "type": "string", "description": "Ticket ID in the external system" }
+        }
+      }
+    },
+    "title": {
+      "type": "string",
+      "description": "Short summary of the issue or request"
+    },
+    "description": {
+      "type": "string",
+      "description": "Detailed description of the issue or request"
+    },
+    "status": {
+      "type": "string",
+      "description": "Current status of the ticket",
+      "enum": ["Open", "In Progress", "Resolved", "Closed", "On Hold", "Cancelled"]
+    },
+    "priority": {
+      "type": "string",
+      "description": "Priority level of the ticket",
+      "enum": ["Low", "Medium", "High", "Critical"]
+    },
+    "type": {
+      "type": "string",
+      "description": "Type of the ticket",
+      "enum": ["Incident", "Problem", "Service Request", "Change Request", "Task"]
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp when the ticket was created"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp when the ticket was last updated"
+    },
+    "reporter": {
+      "type": "object",
+      "description": "Information about the person who created the ticket",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string", "format": "email" }
+      },
+      "required": ["id", "name"]
+    },
+    "assignee": {
+      "type": "object",
+      "description": "Information about the person assigned to the ticket",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string", "format": "email" }
+      }
+    },
+    "customFields": {
+      "type": "object",
+      "description": "Custom fields for system-specific extensions",
+      "additionalProperties": true
+    },
+    "tags": {
+      "type": "array",
+      "description": "Keywords or labels for categorization and routing",
+      "items": { "type": "string" }
+    },
+    "comments": {
+      "type": "array",
+      "description": "User or system-generated comments related to this ticket",
+      "items": {
+        "type": "object",
+        "required": ["id", "author", "body", "createdAt"],
+        "properties": {
+          "id": { "type": "string" },
+          "author": {
+            "type": "object",
+            "required": ["id", "name"],
+            "properties": {
+              "id": { "type": "string" },
+              "name": { "type": "string" },
+              "email": { "type": "string", "format": "email" }
+            }
+          },
+          "body": { "type": "string" },
+          "createdAt": { "type": "string", "format": "date-time" }
+        }
+      }
+    }
+  },
+  "required": ["id", "title", "status", "priority", "type", "createdAt", "reporter"]
+}
