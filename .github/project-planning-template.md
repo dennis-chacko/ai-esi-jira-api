@@ -43,3 +43,24 @@ Define which model class should implement which schema:
   - Interface: `_Interface_`
   - Description: `_Description_`
 
+### Mapper Class Definitions
+Define the mapper classes used in your project:
+
+#### Event-to-Source Mapper
+- [ ] **Class Name**: `EventToJsmTicketTranMapper`
+- [ ] **Source**: Lambda event (event.body)
+- [ ] **Target**: `JsmTicket` model
+- [ ] **Description**: Maps incoming Lambda event payload to JSM ticket source model
+
+#### Source-to-Target Mapper
+- [ ] **Class Name**: `JsmTicketToItsmTicketMapper`
+- [ ] **Source**: `JsmTicket` model
+- [ ] **Target**: `ItsmTicket` model
+- [ ] **Description**: Transforms JSM ticket data to ITSM format for SAMS integration
+
+#### Additional Mappers
+- [ ] **Class Name**: `_MapperClassName_`
+- [ ] **Source**: `_SourceType_`
+- [ ] **Target**: `_TargetType_`
+- [ ] **Description**: `_Description_`
+
