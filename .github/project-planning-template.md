@@ -23,6 +23,23 @@ List all configuration parameters that need centralized management:
 - [ ] `PRODUCER_INTERFACE_KEY` - Producer interface identifier for SAMS integration
 - [ ] _Add more as needed..._
 
+### Builder Pattern Configuration
+
+#### Component Definitions
+Define the components that the Builder pattern should create:
+
+##### Source-to-Target Mapper Component
+- [ ] **Method Name**: `createMapper()`
+- [ ] **Returns**: Instance of the Source-to-Target mapper class
+
+##### Tracking Service Component
+- [ ] **Method Name**: `createTrackingService()`
+- [ ] **Returns**: `TrackingService` instance
+
+##### Producer Interface Component
+- [ ] **Method Name**: `createProducerInterface(mapper?)`
+- [ ] **Returns**: `SamsProducerInterface` instance
+
 ## Model Schema Mapping
 
 ### Model-to-Schema Mapping
@@ -37,11 +54,6 @@ Define which model class should implement which schema:
   - Schema File: `src/schema/itsmTIcket.ts.json`
   - Interface: `ISamsDocument`
   - Description: Target model for ESI/SAMS integration
-
-- [ ] **_Add more models as needed..._**
-  - Schema File: `_path/to/schema.json_`
-  - Interface: `_Interface_`
-  - Description: `_Description_`
 
 ### Mapper Class Definitions
 Define the mapper classes used in your project:
