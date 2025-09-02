@@ -3,6 +3,31 @@
 ## Overview
 This template provides a structured approach to planning development projects. Use this template before starting implementation to ensure comprehensive project planning and reduce technical debt.
 
+## Architecture Pattern Selection
+
+### Code Generation Pattern
+Select the appropriate pattern for your project implementation:
+
+- [ ] **Producer Pattern** - For Lambda functions that publish data to SAMS/ESI systems
+  - Transforms incoming events into canonical ESI documents
+  - Validates and publishes data to downstream consumers
+  - Includes event processing, mapping, and SAMS integration
+
+- [ ] **Transformer Pattern** - For Lambda functions that transform data between systems
+  - Receives data from one system and transforms it for another
+  - Focuses on data transformation and format conversion
+  - Typically used for data migration or integration scenarios
+
+- [ ] **Consumer Pattern** - For Lambda functions that consume and process published events
+  - Receives events from SAMS/ESI or other event sources
+  - Processes events for business logic or downstream actions
+  - Includes event handling, processing, and response generation
+
+### Selected Pattern
+**Current Project Pattern**: Producer Pattern ✓
+
+**Pattern Justification**: This Lambda function accepts payloads in the Lambda event, validates them, transforms them to canonical ESI documents, and publishes them to SAMS for downstream consumption.
+
 ## Configuration Planning
 
 ### Before You Start
