@@ -49,14 +49,20 @@ Before starting this task, complete the Configuration Planning section in [proje
 
 **Step 3**: Implement the methods defined in the Builder Pattern Configuration section of [project-planning-template.md](../project-planning-template.md) with proper dependency injection
 
-**Step 4**: Add helper methods for validation and convenience:
+**Step 4**: Implement singleton pattern for component instances to prevent multiple instance creation:
+- Add private instance variables for each component type (mapperInstance, eventMapperInstance, trackingServiceInstance, producerInterfaceInstance)
+- Implement singleton logic in each createXXX method to check for existing instances before creating new ones
+- Add resetInstances() utility method for testing and debugging purposes
+- Include proper logging for instance creation and reuse
+
+**Step 5**: Add helper methods for validation and convenience:
 - `validateConfiguration()` - Validates all required configuration is available
 - `createComponents()` - Creates all components in one call, returns object with all instances
 - `static createInstance(throwError?)` - Static factory method for creating Builder with loaded configuration
 
-**Step 5**: Include comprehensive error handling, logging, and TypeScript type safety throughout.
+**Step 6**: Include comprehensive error handling, logging, and TypeScript type safety throughout.
 
-**Step 6**: Update main handler/entry point file to integrate Builder pattern:
+**Step 7**: Update main handler/entry point file to integrate Builder pattern:
 - Import Builder class
 - Replace direct instantiation with Builder method calls
 - Remove unused imports after Builder integration
@@ -119,40 +125,37 @@ import { ESILogger } from "esi-common-layer";
 export class Builder {
     private readonly logger: any;
     private config: Config;
+    
+    // Singleton pattern - private instance variables for component caching
+    private mapperInstance: SourceToTargetMapperClass | null = null;
+    private eventMapperInstance: EventToSourceMapperClass | null = null;
+    private trackingServiceInstance: TrackingService | null = null;
+    private producerInterfaceInstance: SamsProducerInterface | null = null;
 
     constructor(config: Config) {
         this.config = config;
         this.logger = ESILogger.getLogger('Builder', config.logLevel);
     }
 
-    // Core methods - implement based on your architecture pattern
+    // Core methods - implement based on your architecture pattern with singleton pattern
     public createMapper(): SourceToTargetMapperClass {
-        // Implementation with error handling and logging
-        // Class name defined in project-planning-template.md
+        if (this.mapperInstance) {
+            this.logger.info('Returning existing mapper instance');
+            return this.mapperInstance;
+        }
+        
+        this.logger.info('Creating new mapper instance');
+        this.mapperInstance = new SourceToTargetMapperClass(/* constructor params */);
+        return this.mapperInstance;
     }
 
-    public createEventMapper?(): EventToSourceMapperClass {
-        // For Producer/Consumer patterns that process events
-        // Optional based on architecture pattern selection
-    }
-
-    public createTrackingService(): TrackingService {
-        // Implementation with configuration validation
-    }
-
-    public async createProducerInterface?(mapper?: IMapper): Promise<SamsProducerInterface> {
-        // For Producer patterns - publishes to SAMS
-        // Implementation with dependency injection
-    }
-
-    public async createConsumerInterface?(): Promise<SamsConsumerInterface> {
-        // For Consumer patterns - consumes from SAMS
-        // Implementation with dependency injection
-    }
-
-    public async createTransformerInterface?(mapper?: IMapper): Promise<TransformerInterface> {
-        // For Transformer patterns - processes and transforms data
-        // Implementation with dependency injection
+    // Utility method for testing and debugging
+    public resetInstances(): void {
+        this.logger.info('Resetting all cached instances');
+        this.mapperInstance = null;
+        this.eventMapperInstance = null;
+        this.trackingServiceInstance = null;
+        this.producerInterfaceInstance = null;
     }
 
     // Helper methods
