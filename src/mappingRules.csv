@@ -1,30 +1,30 @@
-source,required,target,rules
-id,Y,id,Direct mapping - unique identifier
-identifiers,N,identifiers,Direct mapping - array of system identifiers
-identifiers.system,N,identifiers.system,Direct mapping - external system name
-identifiers.id,N,identifiers.id,Direct mapping - external system ticket ID
-title,Y,title,Direct mapping - ticket summary
-description,Y,description,Direct mapping - detailed description
-status,N,status,Direct mapping - ticket status (Open/In Progress/Resolved/Closed/On Hold/Cancelled)
-priority,N,priority,Direct mapping - priority level (Low/Medium/High/Critical)
-type,Y,type,Direct mapping - ticket type (Incident/Problem/Service Request/Change Request/Task)
-createdAt,N,createdAt,Direct mapping - ISO date-time format
-updatedAt,N,updatedAt,Direct mapping - ISO date-time format
-reporter,N,reporter,Direct mapping - ticket creator information
-reporter.id,N,reporter.id,Direct mapping - reporter unique identifier
-reporter.name,N,reporter.name,Direct mapping - reporter display name
-reporter.email,N,reporter.email,Direct mapping - reporter email address
-assignee,N,assignee,Direct mapping - assigned person information
-assignee.id,N,assignee.id,Direct mapping - assignee unique identifier
-assignee.name,N,assignee.name,Direct mapping - assignee display name
-assignee.email,N,assignee.email,Direct mapping - assignee email address
-customFields,N,customFields,Direct mapping - system-specific custom fields object
-tags,N,tags,Direct mapping - array of categorization labels
-comments,N,comments,Direct mapping - array of ticket comments
-comments.id,N,comments.id,Direct mapping - comment unique identifier
-comments.author,N,comments.author,Direct mapping - comment author information
-comments.author.id,N,comments.author.id,Direct mapping - comment author unique identifier
-comments.author.name,N,comments.author.name,Direct mapping - comment author display name
-comments.author.email,N,comments.author.email,Direct mapping - comment author email address
-comments.body,N,comments.body,Direct mapping - comment text content
-comments.createdAt,N,comments.createdAt,Direct mapping - comment creation timestamp
+source,required,nativeBusinessId,target,rules
+id,Y,Y,id,Direct mapping - unique identifier
+identifiers,N,N,identifiers,Direct mapping - array of system identifiers
+identifiers.system,N,N,identifiers.system,Direct mapping - external system name
+identifiers.id,N,N,identifiers.id,Direct mapping - external system ticket ID
+title,Y,N,title,Direct mapping - ticket summary
+description,Y,N,description,Direct mapping - detailed description
+status,N,N,status,Direct mapping - ticket status (Open/In Progress/Resolved/Closed/On Hold/Cancelled)
+priority,N,N,priority,Direct mapping - priority level (Low/Medium/High/Critical)
+type,Y,N,type,Direct mapping - ticket type (Incident/Problem/Service Request/Change Request/Task)
+createdAt,N,N,createdAt,Direct mapping - ISO date-time format
+updatedAt,N,N,updatedAt,Direct mapping - ISO date-time format
+reporter,N,N,reporter,Direct mapping - ticket creator information
+reporter.id,N,N,reporter.id,Direct mapping - reporter unique identifier
+reporter.name,N,N,reporter.name,Direct mapping - reporter display name
+reporter.email,N,N,reporter.email,Direct mapping - reporter email address
+assignee,N,N,assignee,Direct mapping - assigned person information
+assignee.id,N,N,assignee.id,Direct mapping - assignee unique identifier
+assignee.name,N,N,assignee.name,Direct mapping - assignee display name
+assignee.email,N,N,assignee.email,Direct mapping - assignee email address
+customFields,N,N,customFields,Direct mapping - system-specific custom fields object
+tags,N,N,tags,Direct mapping - array of categorization labels
+comments,N,N,comments,Direct mapping - array of ticket comments
+comments.id,N,N,comments.id,Direct mapping - comment unique identifier
+comments.author,N,N,comments.author,Direct mapping - comment author information
+comments.author.id,N,N,comments.author.id,Direct mapping - comment author unique identifier
+comments.author.name,N,N,comments.author.name,Direct mapping - comment author display name
+comments.author.email,N,N,comments.author.email,Direct mapping - comment author email address
+comments.body,N,N,comments.body,Direct mapping - comment text content
+comments.createdAt,N,N,comments.createdAt,Direct mapping - comment creation timestamp
