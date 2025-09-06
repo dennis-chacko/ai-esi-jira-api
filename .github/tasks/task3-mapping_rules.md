@@ -62,8 +62,9 @@ Before starting this task, ensure the following are completed:
     const targetModel = new TargetModel();
     
     // Core ESI document properties
-    targetModel.documentKey = this.createDocumentKey();
-    targetModel.nativeBusinessId = this.assignNativeBusinessId(sourceModel);
+    // Note: For Producer patterns, documentKey is automatically created by SamsProducerInterface
+    // Only set documentKey manually for Consumer/Transformer patterns
+    targetModel.nativeBusinessId = sourceModel.getNativeBusinessId(); // Implemented in source model
 
     // Map properties based on mappingRules.csv
     // Required fields (Y in mappingRules.csv):
@@ -88,25 +89,32 @@ Before starting this task, ensure the following are completed:
   }
   ```
 
-- **Document Key Creation Pattern**:
+- **Document Key Creation Pattern** (for Consumer/Transformer patterns only):
   ```typescript
-  private createDocumentKey(): string {
+  // NOTE: This pattern is NOT needed for Producer implementations
+  // Producer patterns use SamsProducerInterface which automatically creates document keys
+  // Only implement this for Consumer/Transformer patterns
+
+  // Add this helper function in index.ts for Consumer/Transformer patterns
+  function createDocumentKey(): string {
     // Implement document key creation logic based on business requirements
-    // Update this logic once source model has proper properties implemented
+    // This can access tracking service or other components as needed
     return `document-${Date.now()}`;
   }
   ```
 
-- **Native Business ID Assignment Pattern**:
+- **Native Business ID Assignment Pattern** (implement in source model):
   ```typescript
-  private assignNativeBusinessId(sourceModel: SourceModel): string {
+  // Add this method to the source model class (e.g., JsmTicket)
+  public getNativeBusinessId(): string {
     // Based on mappingRules.csv, identify field marked with 'Y' for nativeBusinessId
     // Use the designated field (typically 'id') for native business ID
-    // TODO: Access the designated property once source model is properly implemented
+    // Validate that the field exists and is not empty
     
-    // This should be: return sourceModel.id; (or designated field)
-    // Once source model implements the property from mappingRules.csv
-    return `source-${Date.now()}`; // Temporary implementation
+    if (!this.id || this.id.trim().length === 0) {
+      throw new Error("Native business ID cannot be determined: 'id' field is missing or empty");
+    }
+    return this.id;
   }
   ```
 
@@ -207,7 +215,8 @@ Before starting this task, ensure the following are completed:
 - [ ] Models compile without TypeScript errors
 - [ ] Complete Event-to-Source mapper.mapToTarget() implementation
 - [ ] Complete Source-to-Target mapper.mapToTarget() implementation with mappingRules.csv-based field mapping
-- [ ] Document key creation and native business ID assignment methods
+- [ ] Document key creation function implemented in index.ts (Consumer/Transformer patterns only - NOT needed for Producer patterns)
+- [ ] Native business ID method implemented in source model class
 - [ ] Support for multiple JSON payload formats
 - [ ] Robust error handling and validation for all mapping scenarios
 - [ ] Validation implementation based on mappingRules.csv requirements
@@ -221,7 +230,7 @@ Before starting this task, ensure the following are completed:
 - JSDoc documentation is complete and helpful
 - Event-to-Source mapper successfully transforms various JSON payload formats into source model instances
 - Source-to-Target mapper implements complete field mapping based on mappingRules.csv specifications
-- Document key creation and native business ID assignment methods are properly implemented
+- Document key creation and native business ID assignment methods are properly implemented (document key creation only for Consumer/Transformer patterns)
 - Validation errors provide meaningful feedback for debugging
 - JSON payloads are handled seamlessly
 - Field mapping includes proper enum validation and fallback values

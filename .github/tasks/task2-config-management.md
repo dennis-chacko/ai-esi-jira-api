@@ -16,7 +16,7 @@ Before starting this task, complete the Configuration Planning section in [proje
     - Provide controlled access through getter methods to maintain encapsulation
 
 ### Builder Pattern Implementation
-- Create or update `src/Builder.ts` file that implements the Builder pattern for dependency injection
+- Create or update `src/config/Builder.ts` file that implements the Builder pattern for dependency injection
 - Implement the methods defined in the Builder Pattern Configuration section of [project-planning-template.md](../project-planning-template.md)
 - Add convenience methods for creating complete component sets
 - Include proper error handling, logging, and configuration validation
@@ -43,7 +43,7 @@ Before starting this task, complete the Configuration Planning section in [proje
 
 ### Builder Pattern Implementation Steps:
 
-**Step 1**: Create or update `src/Builder.ts` file with proper imports for all required components and interfaces. If the file already exists, update it with the required methods.
+**Step 1**: Create or update `src/config/Builder.ts` file with proper imports for all required components and interfaces. If the file already exists, update it with the required methods.
 
 **Step 2**: Implement the Builder class with constructor that accepts a Config instance.
 
@@ -197,7 +197,7 @@ export const handler = async (event: any, context?: any) => {
 #### After (Builder Pattern):
 ```typescript
 // Builder pattern approach with dependency injection
-import { Builder } from "./Builder";
+import { Builder } from "./config/Builder";
 
 export const handler = async (event: any, context?: any) => {
     const config = await Config.createInstance({ throwError: true });
@@ -277,7 +277,7 @@ import { SamsProducerInterface } from "./sams_common/samsProducerInterface";
 // After Builder integration and cleanup
 import { ESILogger, ValidationError, ESIHealthCheckProvider } from "esi-common-layer";
 import { Config } from "./config";
-import { Builder } from "./Builder";
+import { Builder } from "./config/Builder";
 import { HttpStatusCodes } from "./sams_common/httpStatusCodes";
 import { InterfaceHealthChecker } from "./healthchecker";
 ```
@@ -291,7 +291,7 @@ import { InterfaceHealthChecker } from "./healthchecker";
 - [ ] All references updated to use getter methods
 
 ### Builder Pattern Implementation:
-- [ ] Builder.ts created in src/ directory (not src/config/)
+- [ ] Builder.ts created in src/config/ directory
 - [ ] Core component creation methods implemented based on architecture pattern
 - [ ] Event mapper creation method (for Producer/Consumer patterns)
 - [ ] Configuration validation and error handling
